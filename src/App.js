@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Groq from 'groq-sdk'; 
 import './App.css';
 
-const TOKEN_ADDRESS = "So11111111111111111111111111111111111111112"; 
+const TOKEN_ADDRESS = "DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump"; 
 
 function App() {
   const [marketData, setMarketData] = useState(null);
