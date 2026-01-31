@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Groq from 'groq-sdk'; 
 import './App.css';
 
-const TOKEN_ADDRESS = "DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump"; 
+const TOKEN_ADDRESS = "5AdiM2M2E8tGj24D3xTjGpswaxvYNnXmYfqqkZyqPh3a"; 
 
 function App() {
   const [marketData, setMarketData] = useState(null);
@@ -31,7 +31,10 @@ function App() {
       try {
         const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN_ADDRESS}`);
         const data = await response.json();
-        if (data.pairs) setMarketData(data.pairs[0]);
+        // SAFE CHECK: Only set data if pairs exist
+        if (data.pairs && data.pairs.length > 0) {
+          setMarketData(data.pairs[0]);
+        }
       } catch (e) { console.error(e); }
     };
     fetchData();
@@ -140,11 +143,24 @@ function App() {
           <div className="hero-stats-card">
             <div style={{textAlign:'center', marginBottom:'20px'}}>
               <div style={{color:'var(--accent-pink)', fontSize:'0.9rem', letterSpacing:'2px'}}>CURRENT ATTRACTION</div>
-              <div style={{fontSize:'3.5rem', fontWeight:'800', color:'white', textShadow:'0 0 20px var(--accent-pink)'}}>${marketData?.priceUsd || '0.0000'}</div>
+              <div style={{fontSize:'3.5rem', fontWeight:'800', color:'white', textShadow:'0 0 20px var(--accent-pink)'}}>
+                ${marketData?.priceUsd || '0.0000'}
+              </div>
             </div>
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px'}}>
-               <div><div style={{color:'#b08ca1', fontSize:'0.7rem'}}>MARKET CAP</div><div style={{fontSize:'1.3rem', fontWeight:'bold'}}>${marketData ? (marketData.fdv/1000).toFixed(1)+'K' : '-'}</div></div>
-               <div><div style={{color:'#b08ca1', fontSize:'0.7rem'}}>LIQUIDITY</div><div style={{fontSize:'1.3rem', fontWeight:'bold'}}>${marketData ? (marketData.liquidity.usd/1000).toFixed(1)+'K' : '-'}</div></div>
+               {/* FIXED SECTION: SAFE CHECK FOR FDV AND LIQUIDITY */}
+               <div>
+                 <div style={{color:'#b08ca1', fontSize:'0.7rem'}}>MARKET CAP</div>
+                 <div style={{fontSize:'1.3rem', fontWeight:'bold'}}>
+                   ${marketData?.fdv ? (marketData.fdv/1000).toFixed(1)+'K' : '-'}
+                 </div>
+               </div>
+               <div>
+                 <div style={{color:'#b08ca1', fontSize:'0.7rem'}}>LIQUIDITY</div>
+                 <div style={{fontSize:'1.3rem', fontWeight:'bold'}}>
+                   ${marketData?.liquidity?.usd ? (marketData.liquidity.usd/1000).toFixed(1)+'K' : '-'}
+                 </div>
+               </div>
             </div>
           </div>
         </div>
@@ -176,7 +192,7 @@ function App() {
           </div>
         </div>
 
-        {/* 3. TOKENOMICS (UPDATED) */}
+        {/* 3. TOKENOMICS */}
         <div>
           <h2 className="section-title">TOKENOMICS OF AFFECTION</h2>
           <div className="tokenomics-section">
@@ -185,7 +201,6 @@ function App() {
               <div style={{fontSize:'1.2rem', color:'var(--text-muted)', letterSpacing:'2px'}}>TOTAL SUPPLY</div>
             </div>
             <div className="token-stats">
-              {/* LIQUIDITY BUMPED TO 88% */}
               <div>
                 <div className="token-stat-item"><span className="token-label">LIQUIDITY POOL (LOCKED)</span><span className="token-value" style={{color:'var(--accent-pink)'}}>88%</span></div>
                 <div className="token-bar-container"><div className="token-bar" style={{width:'88%', background:'var(--accent-pink)'}}></div></div>
@@ -195,8 +210,6 @@ function App() {
                 <div className="token-stat-item"><span className="token-label">MARKETING & CEX</span><span className="token-value" style={{color:'#b700ff'}}>10%</span></div>
                 <div className="token-bar-container"><div className="token-bar" style={{width:'10%', background:'#b700ff'}}></div></div>
               </div>
-              
-              {/* AIRDROP REMOVED */}
               
               <div>
                 <div className="token-stat-item"><span className="token-label">TEAM (VESTED)</span><span className="token-value" style={{color:'var(--accent-red)'}}>2%</span></div>
@@ -231,7 +244,9 @@ function App() {
 
       <footer className="app-footer">
         <div className="footer-links">
-          <a href="#">X (Twitter)</a> • <a href="#">Pump.fun</a> • <a href="#">OnlyFans (Jk)</a>
+          <a href="https://twitter.com" target="_blank" rel="noreferrer">X (Twitter)</a> • 
+          <a href="https://pump.fun" target="_blank" rel="noreferrer">Pump.fun</a> • 
+          <a href="#!" style={{cursor:'default'}}>OnlyFans (Jk)</a>
         </div>
         <p style={{marginTop:'10px'}}>© 2026 Lovester Protocol. Don't catch feelings, catch Xs.</p>
       </footer>
