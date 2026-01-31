@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/lovester/static/css/main.1a159164.css",
-    "main.js": "/lovester/static/js/main.5e3632f9.js",
+    "main.js": "/lovester/static/js/main.970fbbae.js",
     "static/js/453.ebc56512.chunk.js": "/lovester/static/js/453.ebc56512.chunk.js",
     "index.html": "/lovester/index.html",
     "main.1a159164.css.map": "/lovester/static/css/main.1a159164.css.map",
-    "main.5e3632f9.js.map": "/lovester/static/js/main.5e3632f9.js.map",
+    "main.970fbbae.js.map": "/lovester/static/js/main.970fbbae.js.map",
     "453.ebc56512.chunk.js.map": "/lovester/static/js/453.ebc56512.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1a159164.css",
-    "static/js/main.5e3632f9.js"
+    "static/js/main.970fbbae.js"
   ]
 }
