@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Groq from 'groq-sdk'; 
 import './App.css';
 
-const TOKEN_ADDRESS = "5AdiM2M2E8tGj24D3xTjGpswaxvYNnXmYfqqkZyqPh3a"; 
+const TOKEN_ADDRESS = "So11111111111111111111111111111111111111112"; 
 
 function App() {
   const [marketData, setMarketData] = useState(null);
@@ -176,7 +176,7 @@ function App() {
           </div>
         </div>
 
-        {/* 3. TOKENOMICS */}
+        {/* 3. TOKENOMICS (UPDATED) */}
         <div>
           <h2 className="section-title">TOKENOMICS OF AFFECTION</h2>
           <div className="tokenomics-section">
@@ -185,18 +185,19 @@ function App() {
               <div style={{fontSize:'1.2rem', color:'var(--text-muted)', letterSpacing:'2px'}}>TOTAL SUPPLY</div>
             </div>
             <div className="token-stats">
+              {/* LIQUIDITY BUMPED TO 88% */}
               <div>
-                <div className="token-stat-item"><span className="token-label">LIQUIDITY POOL (LOCKED)</span><span className="token-value" style={{color:'var(--accent-pink)'}}>85%</span></div>
-                <div className="token-bar-container"><div className="token-bar" style={{width:'85%', background:'var(--accent-pink)'}}></div></div>
+                <div className="token-stat-item"><span className="token-label">LIQUIDITY POOL (LOCKED)</span><span className="token-value" style={{color:'var(--accent-pink)'}}>88%</span></div>
+                <div className="token-bar-container"><div className="token-bar" style={{width:'88%', background:'var(--accent-pink)'}}></div></div>
               </div>
+              
               <div>
                 <div className="token-stat-item"><span className="token-label">MARKETING & CEX</span><span className="token-value" style={{color:'#b700ff'}}>10%</span></div>
                 <div className="token-bar-container"><div className="token-bar" style={{width:'10%', background:'#b700ff'}}></div></div>
               </div>
-              <div>
-                <div className="token-stat-item"><span className="token-label">COMMUNITY AIRDROP</span><span className="token-value" style={{color:'#00ff9d'}}>3%</span></div>
-                <div className="token-bar-container"><div className="token-bar" style={{width:'3%', background:'#00ff9d'}}></div></div>
-              </div>
+              
+              {/* AIRDROP REMOVED */}
+              
               <div>
                 <div className="token-stat-item"><span className="token-label">TEAM (VESTED)</span><span className="token-value" style={{color:'var(--accent-red)'}}>2%</span></div>
                 <div className="token-bar-container"><div className="token-bar" style={{width:'2%', background:'var(--accent-red)'}}></div></div>
@@ -205,7 +206,7 @@ function App() {
           </div>
         </div>
 
-        {/* 4. TERMINAL (CHART) MOVED TO BOTTOM */}
+        {/* 4. TERMINAL */}
         <div>
           <h2 className="section-title">INTIMATE STATISTICS</h2>
           <div className="terminal-layout">
