@@ -255,7 +255,13 @@ function App() {
         <div className="chat-popup">
           <div className="chat-header">
             <span style={{fontWeight:'bold', fontSize:'1.1rem'}}>🦞 Lovester</span>
-            <span onClick={() => setIsChatOpen(false)} style={{cursor:'pointer', fontSize:'1.5rem'}}>×</span>
+            {/* CLOSE BUTTON ADDED HERE */}
+            <span 
+              onClick={() => setIsChatOpen(false)} 
+              style={{cursor:'pointer', fontSize:'1.5rem', fontWeight: 'bold'}}
+            >
+              ×
+            </span>
           </div>
           <div className="chat-body">
             {messages.map((msg, i) => (
