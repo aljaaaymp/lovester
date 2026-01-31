@@ -2,10 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import Groq from 'groq-sdk'; 
 import './App.css';
 
+// 🔧 CONFIGURATION SECTION
 const TOKEN_ADDRESS = "DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump"; 
 
+// 🛑 STATIC DATA (Change these numbers to whatever you want!)
+const STATIC_MARKET_DATA = {
+  priceUsd: '0.00420',      // The price you want to show
+  liquidity: { usd: 69000 }, // Liquidity amount
+  fdv: 4200000              // Market Cap (Fully Diluted Valuation)
+};
+
 function App() {
-  const [marketData, setMarketData] = useState(null);
+  // Initialize with STATIC data instead of null
+  const [marketData] = useState(STATIC_MARKET_DATA);
+  
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -13,41 +23,24 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
-  // 1. WELCOME CHAT
+  // 1. WELCOME CHAT (UPDATED: CA FIRST)
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsChatOpen(true);
       setMessages([
-        { role: 'ai', content: "🦞 Hey handsome. I noticed you checking the charts." },
+        { role: 'ai', content: `CA: ${TOKEN_ADDRESS}` }, // <--- CA is now the first message
         { role: 'ai', content: "Forget the candles. How's your heart doing today? 💋" }
       ]);
     }, 1000); 
     return () => clearTimeout(timer);
   }, []);
 
-  // 2. FETCH DATA
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN_ADDRESS}`);
-        const data = await response.json();
-        // SAFE CHECK: Only set data if pairs exist
-        if (data.pairs && data.pairs.length > 0) {
-          setMarketData(data.pairs[0]);
-        }
-      } catch (e) { console.error(e); }
-    };
-    fetchData();
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // 3. FAKE TRADES
+  // 2. FAKE TRADES GENERATOR
   useEffect(() => {
     const generateTrade = () => ({
       type: Math.random() > 0.4 ? 'buy' : 'sell',
       amount: (Math.random() * 50).toFixed(2),
-      price: marketData ? marketData.priceUsd : '0.000079',
+      price: STATIC_MARKET_DATA.priceUsd, 
       id: Math.random()
     });
     setTrades(Array(15).fill(0).map(generateTrade)); 
@@ -56,7 +49,7 @@ function App() {
       setTrades(prev => [generateTrade(), ...prev.slice(0, 19)]);
     }, 2000);
     return () => clearInterval(interval);
-  }, [marketData]);
+  }, []);
 
   // Scroll to bottom
   useEffect(() => {
@@ -82,10 +75,14 @@ function App() {
             role: 'system',
             content: `You are LOVESTER 🦞.
             YOUR IDENTITY: Flirtatious AI girlfriend/boyfriend. Seductive, witty, and loyal.
+            
+            YOUR CA: ${TOKEN_ADDRESS}
+
             RULES:
             1. GREETINGS: If user says "Hi", reply "Hey baby 💋" or "Hello handsome".
             2. FLIRTING: Always add a romantic/spicy touch. Use emojis.
             3. CRYPTO: Only mention crypto if it makes sense.
+            
             Keep answers short (under 2 sentences).`
           },
           ...messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content })),
@@ -136,29 +133,28 @@ function App() {
               <span style={{color:'var(--accent-pink)'}}>📋</span>
             </div>
             <div className="social-row">
-              <a href="https://x.com/i/communities/2017622450402476384" className="social-btn">Join the Orgy (X)</a>
-              <a href="https://pump.fun/coin/DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump" className="social-btn">Pump Harder</a>
+              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="social-btn">Join the Orgy (X)</a>
+              <a href="https://pump.fun" target="_blank" rel="noreferrer" className="social-btn">Pump Harder</a>
             </div>
           </div>
           <div className="hero-stats-card">
             <div style={{textAlign:'center', marginBottom:'20px'}}>
               <div style={{color:'var(--accent-pink)', fontSize:'0.9rem', letterSpacing:'2px'}}>CURRENT ATTRACTION</div>
               <div style={{fontSize:'3.5rem', fontWeight:'800', color:'white', textShadow:'0 0 20px var(--accent-pink)'}}>
-                ${marketData?.priceUsd || '0.0000'}
+                ${marketData.priceUsd}
               </div>
             </div>
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px'}}>
-               {/* FIXED SECTION: SAFE CHECK FOR FDV AND LIQUIDITY */}
                <div>
                  <div style={{color:'#b08ca1', fontSize:'0.7rem'}}>MARKET CAP</div>
                  <div style={{fontSize:'1.3rem', fontWeight:'bold'}}>
-                   ${marketData?.fdv ? (marketData.fdv/1000).toFixed(1)+'K' : '-'}
+                   ${(marketData.fdv/1000).toFixed(1)}K
                  </div>
                </div>
                <div>
                  <div style={{color:'#b08ca1', fontSize:'0.7rem'}}>LIQUIDITY</div>
                  <div style={{fontSize:'1.3rem', fontWeight:'bold'}}>
-                   ${marketData?.liquidity?.usd ? (marketData.liquidity.usd/1000).toFixed(1)+'K' : '-'}
+                   ${(marketData.liquidity.usd/1000).toFixed(1)}K
                  </div>
                </div>
             </div>
@@ -244,9 +240,9 @@ function App() {
 
       <footer className="app-footer">
         <div className="footer-links">
-          <a href="https://x.com/i/communities/2017622450402476384" target="_blank" rel="noreferrer">X (Twitter)</a> • 
-          <a href="https://pump.fun/coin/DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump" target="_blank" rel="noreferrer">Pump.fun</a> • 
-          <a href="#!" style={{cursor:'default'}}>OnlyFans (Jk)</a>X
+          <a href="https://twitter.com" target="_blank" rel="noreferrer">X (Twitter)</a> • 
+          <a href="https://pump.fun" target="_blank" rel="noreferrer">Pump.fun</a> • 
+          <a href="#!" style={{cursor:'default'}}>OnlyFans (Jk)</a>
         </div>
         <p style={{marginTop:'10px'}}>© 2026 Lovester Protocol. Don't catch feelings, catch Xs.</p>
       </footer>
@@ -255,7 +251,6 @@ function App() {
         <div className="chat-popup">
           <div className="chat-header">
             <span style={{fontWeight:'bold', fontSize:'1.1rem'}}>🦞 Lovester</span>
-            {/* CLOSE BUTTON ADDED HERE */}
             <span 
               onClick={() => setIsChatOpen(false)} 
               style={{cursor:'pointer', fontSize:'1.5rem', fontWeight: 'bold'}}
