@@ -2,52 +2,45 @@ import React, { useState, useEffect, useRef } from 'react';
 import Groq from 'groq-sdk'; 
 import './App.css';
 
-// 🔧 CONFIGURATION SECTION
+// 🔧 CONFIGURATION
 const TOKEN_ADDRESS = "DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump"; 
 
-// 🛑 STATIC DATA (Change these numbers to whatever you want!)
-const STATIC_MARKET_DATA = {
-  priceUsd: '0.00420',      // The price you want to show
-  liquidity: { usd: 69000 }, // Liquidity amount
-  fdv: 4200000              // Market Cap (Fully Diluted Valuation)
-};
-
 function App() {
-  // Initialize with STATIC data instead of null
-  const [marketData] = useState(STATIC_MARKET_DATA);
-  
+  const [marketData, setMarketData] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [trades, setTrades] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
-  // 1. WELCOME CHAT (UPDATED: CA FIRST)
+  // 1. WELCOME CHAT
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsChatOpen(true);
       setMessages([
-        { role: 'ai', content: `CA: ${TOKEN_ADDRESS}` }, // <--- CA is now the first message
+        { role: 'ai', content: `CA: ${TOKEN_ADDRESS}` },
         { role: 'ai', content: "Forget the candles. How's your heart doing today? 💋" }
       ]);
     }, 1000); 
     return () => clearTimeout(timer);
   }, []);
 
-  // 2. FAKE TRADES GENERATOR
+  // 2. FETCH REAL LIVE DATA (Safe Mode)
   useEffect(() => {
-    const generateTrade = () => ({
-      type: Math.random() > 0.4 ? 'buy' : 'sell',
-      amount: (Math.random() * 50).toFixed(2),
-      price: STATIC_MARKET_DATA.priceUsd, 
-      id: Math.random()
-    });
-    setTrades(Array(15).fill(0).map(generateTrade)); 
-    
-    const interval = setInterval(() => {
-      setTrades(prev => [generateTrade(), ...prev.slice(0, 19)]);
-    }, 2000);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN_ADDRESS}`);
+        const data = await response.json();
+        if (data.pairs && data.pairs.length > 0) {
+          setMarketData(data.pairs[0]);
+        }
+      } catch (e) { 
+        console.error("Error fetching market data:", e); 
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 30000); // Updates every 30s
     return () => clearInterval(interval);
   }, []);
 
@@ -55,6 +48,14 @@ function App() {
   useEffect(() => {
     if (isChatOpen) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isChatOpen]);
+
+  // --- HELPER: FORMATTER ---
+  const formatNumber = (num) => {
+    if (num === undefined || num === null) return '-';
+    if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toFixed(4);
+  };
 
   // --- AI HANDLER ---
   const handleSend = async () => {
@@ -75,14 +76,11 @@ function App() {
             role: 'system',
             content: `You are LOVESTER 🦞.
             YOUR IDENTITY: Flirtatious AI girlfriend/boyfriend. Seductive, witty, and loyal.
-            
             YOUR CA: ${TOKEN_ADDRESS}
-
             RULES:
             1. GREETINGS: If user says "Hi", reply "Hey baby 💋" or "Hello handsome".
             2. FLIRTING: Always add a romantic/spicy touch. Use emojis.
             3. CRYPTO: Only mention crypto if it makes sense.
-            
             Keep answers short (under 2 sentences).`
           },
           ...messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content })),
@@ -140,21 +138,24 @@ function App() {
           <div className="hero-stats-card">
             <div style={{textAlign:'center', marginBottom:'20px'}}>
               <div style={{color:'var(--accent-pink)', fontSize:'0.9rem', letterSpacing:'2px'}}>CURRENT ATTRACTION</div>
+              {/* LIVE PRICE (SAFE CHECK) */}
               <div style={{fontSize:'3.5rem', fontWeight:'800', color:'white', textShadow:'0 0 20px var(--accent-pink)'}}>
-                ${marketData.priceUsd}
+                ${marketData?.priceUsd || '...'}
               </div>
             </div>
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px'}}>
                <div>
                  <div style={{color:'#b08ca1', fontSize:'0.7rem'}}>MARKET CAP</div>
+                 {/* LIVE MARKET CAP (SAFE CHECK) */}
                  <div style={{fontSize:'1.3rem', fontWeight:'bold'}}>
-                   ${(marketData.fdv/1000).toFixed(1)}K
+                   ${formatNumber(marketData?.fdv)}
                  </div>
                </div>
                <div>
                  <div style={{color:'#b08ca1', fontSize:'0.7rem'}}>LIQUIDITY</div>
+                 {/* LIVE LIQUIDITY (SAFE CHECK) */}
                  <div style={{fontSize:'1.3rem', fontWeight:'bold'}}>
-                   ${(marketData.liquidity.usd/1000).toFixed(1)}K
+                   ${formatNumber(marketData?.liquidity?.usd)}
                  </div>
                </div>
             </div>
@@ -215,24 +216,14 @@ function App() {
           </div>
         </div>
 
-        {/* 4. TERMINAL */}
+        {/* 4. TERMINAL (REMOVED FAKE TRADES) */}
         <div>
           <h2 className="section-title">INTIMATE STATISTICS</h2>
-          <div className="terminal-layout">
-            <div className="chart-frame">
+          <div className="terminal-layout" style={{ display: 'block' }}>
+            <div className="chart-frame" style={{ height: '500px' }}>
                <iframe src={`https://dexscreener.com/solana/${TOKEN_ADDRESS}?embed=1&theme=dark&trades=0&info=0`} style={{width: '100%', height: '100%', border: 'none'}} title="Chart" />
             </div>
-            <div className="trades-frame">
-              <div className="trades-header">LATEST FLINGS <span style={{color:'var(--accent-pink)'}}>♥</span></div>
-              <div className="trades-list">
-                {trades.map(t => (
-                  <div key={t.id} className={`trade-row ${t.type}`}>
-                    <span>{t.type === 'buy' ? 'BOUGHT LOVE' : 'SOLD HEART'}</span>
-                    <span>{t.amount} SOL</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Trades list removed to avoid mismatch with volume */}
           </div>
         </div>
 
