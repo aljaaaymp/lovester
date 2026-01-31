@@ -131,8 +131,8 @@ function App() {
               <span style={{color:'var(--accent-pink)'}}>📋</span>
             </div>
             <div className="social-row">
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="social-btn">Join the Orgy (X)</a>
-              <a href="https://pump.fun" target="_blank" rel="noreferrer" className="social-btn">Pump Harder</a>
+              <a href="https://x.com/i/communities/2017622450402476384" target="_blank" rel="noreferrer" className="social-btn">Join the Orgy (X)</a>
+              <a href="https://pump.fun/coin/DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump" target="_blank" rel="noreferrer" className="social-btn">Pump Harder</a>
             </div>
           </div>
           <div className="hero-stats-card">
@@ -231,8 +231,8 @@ function App() {
 
       <footer className="app-footer">
         <div className="footer-links">
-          <a href="https://twitter.com" target="_blank" rel="noreferrer">X (Twitter)</a> • 
-          <a href="https://pump.fun" target="_blank" rel="noreferrer">Pump.fun</a> • 
+          <a href="https://x.com/i/communities/2017622450402476384" target="_blank" rel="noreferrer">X (Twitter)</a> • 
+          <a href="https://pump.fun/coin/DKtu2ikG6Ss5FQNVXh1izVGLFbo1jKixJjhRQNFqpump" target="_blank" rel="noreferrer">Pump.fun</a> • 
           <a href="#!" style={{cursor:'default'}}>OnlyFans (Jk)</a>
         </div>
         <p style={{marginTop:'10px'}}>© 2026 Lovester Protocol. Don't catch feelings, catch Xs.</p>
